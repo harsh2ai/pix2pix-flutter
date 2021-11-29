@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ticktocks/loginScreen.dart';
+import 'package:ticktocks/HomePage.dart';
+import 'package:ticktocks/loginscreens/loginScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(primarySwatch: Colors.blue, appBarTheme: AppBarTheme(color: Colors.deepOrange)),
-        home: LoginScreen()
-        // home: const MyHomePage(title: 'Img Upload User'),
-        );
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue, appBarTheme: AppBarTheme(color: Colors.deepOrange)),
+      // home: LoginScreen(),
+      home: MyHomePage(),
+    );
   }
 }

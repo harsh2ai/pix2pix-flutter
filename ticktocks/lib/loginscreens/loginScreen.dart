@@ -3,6 +3,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ticktocks/HomePage.dart';
+import 'package:ticktocks/loginscreens/signupScreen.dart';
+
+import 'forgetPassword.dart';
+import '../components/methods.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,7 +14,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final controller = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool showpass = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -46,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Container(
                     foregroundDecoration: halfGreyScaler(),
                     child: Text(
-                      'LOGIN',
+                      'Welcome to Visualizer',
                       style: TextStyle(fontSize: 25, color: Colors.deepOrange),
                     ),
                   ),
@@ -57,15 +71,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: width * 0.7,
                     child: Column(
                       children: [
-                        customtextfield(),
+                        customtextfield(
+                            controller: _emailController,
+                            hinttext: 'Enter your registered Email ID',
+                            labeltext: 'Email'),
                         SizedBox(
                           height: 40,
                         ),
-                        customtextfield(),
+                        customtextfield(
+                            controller: _passwordController,
+                            hinttext: 'Enter your password',
+                            labeltext: 'Password',
+                            showText: showpass),
                         Align(
                           heightFactor: 1.5,
                           alignment: Alignment.centerRight,
-                          child: Text('Show Password'),
+                          child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  showpass = !showpass;
+                                });
+                              },
+                              child: Text(
+                                'Show Password',
+                                style: TextStyle(color: Colors.deepOrange),
+                              )),
                         ),
                         SizedBox(
                           height: 40,
@@ -98,42 +128,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  NoAccSignup()
+                  NoAccSignup(),
+                  SizedBox(height: 20),
+                  Container(
+                    child: Text.rich(
+                      TextSpan(text: "Forgot your password?\n", children: [
+                        TextSpan(
+                          text: 'Reset Password',
+                          style: TextStyle(color: Colors.deepOrange),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return ForgetPassScreen();
+                              }));
+                            },
+                          mouseCursor: SystemMouseCursors.click,
+                        )
+                      ]),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  TextFormField customtextfield() {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-          // focusColor: Colors.red,
-          // focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), gapPadding: 10),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          label: Text('Email'),
-          hintText: 'Enter your registered Email ID',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), gapPadding: 10)),
-    );
-  }
-
-  BoxDecoration halfGreyScaler() {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      gradient: LinearGradient(
-        colors: [
-          Colors.grey,
-          Colors.transparent,
-        ],
-        begin: Alignment(0, 0.1),
-        end: Alignment(0.2, 0.1),
-        tileMode: TileMode.clamp,
-      ),
-      backgroundBlendMode: BlendMode.saturation,
     );
   }
 }
@@ -151,9 +171,11 @@ class NoAccSignup extends StatelessWidget {
         style: TextStyle(color: Colors.deepOrange),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            print('sign up');
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return SignupPage();
+            }));
           },
-        mouseCursor: SystemMouseCursors.precise,
+        mouseCursor: SystemMouseCursors.click,
       )
     ]));
   }

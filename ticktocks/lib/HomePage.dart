@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:ticktocks/Screen2.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -12,8 +13,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   File? SelectedImage;
   String? message;
+  bool imageNotSelectedError = false;
 
-  uploadImage() async {
+  ColorizeImage() async {
     final request = http.MultipartRequest("POST", Uri.parse("https://8ede-180-149-225-244.ngrok.io/upload"));
     final headers = {"ContentType": "multipart/form-data"};
 
@@ -33,41 +35,92 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future getImage() async {
-    final pickedImage = await ImagePicker().getImage(source: ImageSource.gallery);
+    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     SelectedImage = File(pickedImage!.path);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        leading: Container(),
         title: Text('Visualizer'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.logout)),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SelectedImage == null ? Text("Please upload a image") : Image.file(SelectedImage!),
+            SelectedImage == null
+                ? Container(
+                    height: height * 0.5,
+                    width: width * 0.9,
+                    color: Colors.grey.withOpacity(0.5),
+                    child: Center(
+                      child: Text(
+                        "Please upload an image\n from gallery",
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: height * 0.5,
+                    width: width * 0.9,
+                    child: Image.file(SelectedImage!),
+                  ),
+            SizedBox(height: 20),
+            if (imageNotSelectedError)
+              Text(
+                'No image has been selected',
+                style: TextStyle(color: Colors.red),
+              ),
             TextButton.icon(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
                 ),
-                onPressed: uploadImage,
+                onPressed: () {
+                  if (SelectedImage == null) {
+                    imageNotSelectedError = true;
+                  } else {
+                    imageNotSelectedError = false;
+                    ColorizeImage;
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    //   return Screen2();
+                    // }));
+                  }
+                  setState(() {});
+                },
                 icon: Icon(
-                  Icons.upload_file,
+                  Icons.wifi_protected_setup_sharp,
                   color: Colors.white,
                 ),
                 label: Text(
-                  "upload Image",
+                  "Process Image",
                   style: TextStyle(color: Colors.white),
                 ))
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.deepOrange,
         onPressed: getImage,
-        child: Icon(Icons.add_a_photo),
+        child: Icon(
+          Icons.upload_file,
+          color: Colors.white,
+        ),
       ),
     );
   }
