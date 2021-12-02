@@ -94,12 +94,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   if (SelectedImage == null) {
                     imageNotSelectedError = true;
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return Screen2();
+                      },
+                    ));
                   } else {
                     imageNotSelectedError = false;
-                    ColorizeImage;
+                    // ColorizeImage;
                     // Navigator.push(context, MaterialPageRoute(builder: (context) {
                     //   return Screen2();
-                    // }));
+                    // },
+                    // ));
                   }
                   setState(() {});
                 },
